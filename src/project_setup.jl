@@ -1,7 +1,7 @@
 ##########################################################################################
 # Project directory
 ##########################################################################################
-export projectdir, wipdir, srcdir, visualizationdir, literaturedir, computeddir, rawdir, processeddir, driversdir
+export projectdir, wipdir, srcdir, visualizationdir, literaturedir, datadir, driversdir
 export projectname
 export findproject, quickactivate, @quickactivate
 
@@ -41,12 +41,7 @@ for dir_type ∈ ("wip", "src", "visualization", "literature", "data", "drivers"
         $function_name(args...) = SetUpProject.projectdir($dir_type, args...)
     end
 end
-for dir_type ∈ ("computed", "raw", "processed")
-    function_name = Symbol(dir_type * "dir")
-    @eval begin
-        $function_name(args...) = datadir($dir_type, args...)
-    end
-end
+
 
 """
     projectname()
@@ -466,16 +461,16 @@ function makeintro(name)
 
     for (i, d) in enumerate(dicts)
       f = makesim(d)
-      @tagsave(datadir(computeddir(), savename(d, "jld2")), f)
+      @tagsave(datadir("computed", savename(d, "jld2")), f)
     end
 
-    firstsim = readdir(datadir("simulations"))[1]
-    wload(datadir("simulations", firstsim))
+    firstsim = readdir(datadir("computed"))[1]
+    wload(datadir("computed", firstsim))
 
     #Pkg.add(["DataFrames"])
     using DataFrames
 
-    df = collect_results(datadir("simulations"))
+    df = collect_results(datadir("computed"))
 
 
     """
