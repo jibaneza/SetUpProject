@@ -292,7 +292,7 @@ function initialize_project(path, name = default_name_from_path(path);
     chmod(joinpath(path, ".gitignore"), 0o644)
     cp(joinpath(@__DIR__, "defaults", "gitattributes.txt"), joinpath(path, ".gitattributes"))
     chmod(joinpath(path, ".gitattributes"), 0o644)
-    write(joinpath(driversdir(), "intro.jl"), makeintro(name))
+    write(joinpath(driversdir(), "main.jl"), makeintro(name))
 
     files = [".gitignore", ".gitattributes", "intro.jl"]
     if readme
