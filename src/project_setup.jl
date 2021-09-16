@@ -1,7 +1,7 @@
 ##########################################################################################
 # Project directory
 ##########################################################################################
-export projectdir, wipdir, srcdir, visualizationdir, literaturedir, datadir, driversdir
+export projectdir, wipdir, srcdir, visualizationdir, literaturedir, datadir, scriptsdir
 export projectname
 export findproject, quickactivate, @quickactivate
 
@@ -35,7 +35,7 @@ projectdir(args...) = joinpath(projectdir(), args...)
 
 
 # Generate functions to access the path of default subdirectories.
-for dir_type ∈ ("wip", "src", "visualization", "literature", "data", "drivers")
+for dir_type ∈ ("wip", "src", "visualization", "literature", "data", "scripts")
     function_name = Symbol(dir_type * "dir")
     @eval begin
         $function_name(args...) = SetUpProject.projectdir($dir_type, args...)
@@ -292,7 +292,7 @@ function initialize_project(path, name = default_name_from_path(path);
     chmod(joinpath(path, ".gitignore"), 0o644)
     cp(joinpath(@__DIR__, "defaults", "gitattributes.txt"), joinpath(path, ".gitattributes"))
     chmod(joinpath(path, ".gitattributes"), 0o644)
-    write(joinpath(driversdir(), "main.jl"), makeintro(name))
+    write(joinpath(scriptsdir(), "main.jl"), makeintro(name))
     write(joinpath(srcdir(), "DummyMod.jl"), makesrc())
 
 
@@ -414,7 +414,7 @@ end
 const DEFAULT_TEMPLATE = [
         "wip" => "tempData",
         "src",
-        "drivers",
+        "scripts",
         "visualization",
         "notebooks",
         "literature",
@@ -444,7 +444,7 @@ function makeintro(name)
     \"\"\"
     Path of active project: \$(projectdir())
     Path of source files:   \$(srcdir())
-    Path of driver files:   \$(driversdir())
+    Path of driver files:   \$(scriptsdir())
 
     \"\"\"
     )
