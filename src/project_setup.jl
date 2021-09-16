@@ -293,6 +293,8 @@ function initialize_project(path, name = default_name_from_path(path);
     cp(joinpath(@__DIR__, "defaults", "gitattributes.txt"), joinpath(path, ".gitattributes"))
     chmod(joinpath(path, ".gitattributes"), 0o644)
     write(joinpath(driversdir(), "main.jl"), makeintro(name))
+    write(joinpath(srcdir(), "DummyMod.jl"), makesrc())
+
 
     files = [".gitignore", ".gitattributes", "intro.jl"]
     if readme
@@ -446,5 +448,56 @@ function makeintro(name)
 
     \"\"\"
     )
+    push!(LOAD_PATH,srcdir())
+    using DummyMod
+
+    allparams = Dict(
+        "a" => [1, 2], # it is inside vector. It is expanded.
+        "b" => [3, 4],
+        "v" => [rand(5)],     # single element inside vector; no expansion
+        "method" => "linear", # not in vector = not expanded, even if naturally iterable
+        )
+    dicts = dict_list(allparams)
+
+    for (i, d) in enumerate(dicts)
+      f = makesim(d)
+      @tagsave(datadir(computeddir(), savename(d, "jld2")), f)
+    end
+
+    firstsim = readdir(datadir("simulations"))[1]
+    wload(datadir("simulations", firstsim))
+
+    #Pkg.add(["DataFrames"])
+    using DataFrames
+
+    df = collect_results(datadir("simulations"))
+
+
+    """
+end
+
+function makesrc()
+    """
+    using SetUpProject
+    module DummyMod
+    export makesim
+
+    function fakesim(a, b, v, method = "linear")
+      if method == "linear"
+          r = @. a + b * v
+      elseif method == "cubic"
+          r = @. a*b*v^3
+      end
+      y = sqrt(b)
+      return r, y
+    end
+    function makesim(d::Dict)
+      @unpack a, b, v, method = d
+      r, y = fakesim(a, b, v, method)
+      fulld = copy(d)
+      fulld["r"] = r
+      fulld["y"] = y
+      return fulld
+    end
     """
 end
