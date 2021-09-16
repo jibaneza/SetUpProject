@@ -271,7 +271,7 @@ function initialize_project(path, name = default_name_from_path(path);
 
     Pkg.activate(path)
     try
-        Pkg.add("https://github.com/jibaneza/SetUpProject")
+        Pkg.add(url="https://github.com/jibaneza/SetUpProject")
     catch
         @warn "Could not add SetUpProject to project. Adding Pkg instead..."
         Pkg.add("Pkg")
