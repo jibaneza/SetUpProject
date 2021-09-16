@@ -1,7 +1,7 @@
 ##########################################################################################
 # Project directory
 ##########################################################################################
-export projectdir, wipdir, srcdir, visualizationdir, literaturedir, computeddir, rawdir, processeddir
+export projectdir, wipdir, srcdir, visualizationdir, literaturedir, computeddir, rawdir, processeddir, driversdir
 export projectname
 export findproject, quickactivate, @quickactivate
 
@@ -478,8 +478,10 @@ end
 
 function makesrc()
     """
-    using SetUpProject
     module DummyMod
+
+    using SetUpProject
+
     export makesim
 
     function fakesim(a, b, v, method = "linear")
@@ -498,6 +500,8 @@ function makesrc()
       fulld["r"] = r
       fulld["y"] = y
       return fulld
+    end
+
     end
     """
 end
