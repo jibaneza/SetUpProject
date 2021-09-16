@@ -276,6 +276,11 @@ function initialize_project(path, name = default_name_from_path(path);
         @warn "Could not add SetUpProject to project. Adding Pkg instead..."
         Pkg.add("Pkg")
     end
+    try
+        Pkg.add("JLD2")
+    catch
+        @warn "Could not add JLD2 to project."
+    end
 
     # Instantiate template
     folders, ph_files = insert_folders(path, template, placeholder)
